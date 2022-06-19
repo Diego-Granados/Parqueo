@@ -1,8 +1,11 @@
+from distutils.command.config import config
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
 import time
 from datetime import datetime
+from datetime import date
+from datetime import timedelta
 import random
 import os
 
@@ -16,18 +19,20 @@ wait_color = "#ff0000"
 
 # Variables importantes
 
-parqueo = {1:[606393, "16/6/2022 2:23:30", "16/6/2022 18:00:15", 5.00]}
-detalle_de_uso = [[606393, "16/6/2022 3:23:15", 5.00, "16/6/2022 3:39:31", 1]]
-configuracion = [30, 5, 3, "diego@gmail.com", 15, 1, 5, 10, 1, 5, 10, 20, 50]
-saldocoin1 = 0
-saldocoin2 = 0
-saldocoin3 = 0
+parqueo = {1:[606393, "17/06/2022 8:57:30", "", 0], 2:[54321, "17/06/2022 8:57:30", "18/06/2022 8:57:30", 30]}
+detalle_de_uso = [[12345, "16/06/2022 3:23:15", "16/06/2022 3:39:31", 25.00, 2],[24132, "20/06/2022 3:23:15", "20/06/2022 3:39:31", 35.00, 2]]
+ingresotarjeta = [[35.00, 24132]]
 
-saldobill1 = 0
-saldobill2 = 0
-saldobill3 = 0
-saldobill4 = 0
-saldobill5 = 0
+configuracion = [30, 5, 3, "diego@gmail.com", 15, 1, 5, 10, 1, 5, 10, 20, 50]
+saldocoin1 = 100
+saldocoin2 = 100
+saldocoin3 = 100
+
+saldobill1 = 100
+saldobill2 = 100
+saldobill3 = 100
+saldobill4 = 100
+saldobill5 = 100
 
 entradacoin1 = saldocoin1
 entradacoin2 = saldocoin2
@@ -39,15 +44,15 @@ entradabill3 = saldobill3
 entradabill4 = saldobill4
 entradabill5 = saldobill5
 
-salidacoin1 = saldocoin1
-salidacoin2 = saldocoin2
-salidacoin3 = saldocoin3
+salidacoin1 = 0
+salidacoin2 = 0
+salidacoin3 = 0
 
-salidabill1 = saldobill1
-salidabill2 = saldobill2
-salidabill3 = saldobill3
-salidabill4 = saldobill4
-salidabill5 = saldobill5
+salidabill1 = 0
+salidabill2 = 0
+salidabill3 = 0
+salidabill4 = 0
+salidabill5 = 0
 
 # Funciones
 def cerrarventana(window):
@@ -361,7 +366,7 @@ def cargar():
     totalantes_label.grid(row = 2, column = 2)
     
     saldocarga_label = tk.Label(cargar_ventana, text = "CARGA", font = ("Microsoft YaHei", 14),bg = blanco) 
-    saldocarga_label.grid(row = 1, column = 3)
+    saldocarga_label.grid(row = 1, column = 3, columnspan = 2)
 
     cantidadcarga_label = tk.Label(cargar_ventana, text = "CANTIDAD", font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadcarga_label.grid(row = 2, column = 3)
@@ -370,7 +375,7 @@ def cargar():
     totalcarga_label.grid(row = 2, column = 4)
     
     saldototal_label = tk.Label(cargar_ventana, text = "SALDO", font = ("Microsoft YaHei", 14),bg = blanco) 
-    saldototal_label.grid(row = 1, column = 5)
+    saldototal_label.grid(row = 1, column = 5, columnspan = 2)
 
     cantidadtotal_label = tk.Label(cargar_ventana, text = "CANTIDAD", font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadtotal_label.grid(row = 2, column = 5)
@@ -452,16 +457,16 @@ def cargar():
     cantidadbilletesantes_Label = tk.Label(cargar_ventana, text = str(saldobill1 + saldobill2 + saldobill3 + saldobill4 + saldobill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadbilletesantes_Label.grid(row = 12, column = 1)
 
-    totalcoin1carga_Label = tk.Label(cargar_ventana, text = str(saldocoin1 * coin1), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin1carga_Label = tk.Label(cargar_ventana, text = str((saldocoin1 * coin1) / 100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin1carga_Label.grid(row = 3, column = 2)
 
-    totalcoin2carga_Label = tk.Label(cargar_ventana, text = str(saldocoin2 * coin2), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin2carga_Label = tk.Label(cargar_ventana, text = str((saldocoin2 * coin2)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin2carga_Label.grid(row = 4, column = 2)
 
-    totalcoin3carga_Label = tk.Label(cargar_ventana, text = str(saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin3carga_Label = tk.Label(cargar_ventana, text = str((saldocoin3 * coin3)/ 100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin3carga_Label.grid(row = 5, column = 2)
 
-    totalmonedacarga_Label = tk.Label(cargar_ventana, text = str(saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalmonedacarga_Label = tk.Label(cargar_ventana, text = str((saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalmonedacarga_Label.grid(row = 6, column = 2)
 
     totalbill1carga_Label = tk.Label(cargar_ventana, text = str(saldobill1 * bill1), font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -585,16 +590,16 @@ def cargar():
     cantidadbilletesaldo_Label = tk.Label(cargar_ventana, text = str(saldobill1 + saldobill2 + saldobill3 + saldobill4 + saldobill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadbilletesaldo_Label.grid(row = 12, column = 5)
 
-    totalcoin1saldo_Label = tk.Label(cargar_ventana, text = str(saldocoin1 * coin1), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin1saldo_Label = tk.Label(cargar_ventana, text = str((saldocoin1 * coin1)/ 100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin1saldo_Label.grid(row = 3, column = 6)
 
-    totalcoin2saldo_Label = tk.Label(cargar_ventana, text = str(saldocoin2 * coin2), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin2saldo_Label = tk.Label(cargar_ventana, text = str((saldocoin2 * coin2)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin2saldo_Label.grid(row = 4, column = 6)
 
-    totalcoin3saldo_Label = tk.Label(cargar_ventana, text = str(saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin3saldo_Label = tk.Label(cargar_ventana, text = str((saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin3saldo_Label.grid(row = 5, column = 6)
 
-    totalmonedasaldo_Label = tk.Label(cargar_ventana, text = str(saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalmonedasaldo_Label = tk.Label(cargar_ventana, text = str((saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalmonedasaldo_Label.grid(row = 6, column = 6)
 
     totalbill1saldo_Label = tk.Label(cargar_ventana, text = str(saldobill1 * bill1), font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -615,7 +620,7 @@ def cargar():
     totalbilletesaldo_Label = tk.Label(cargar_ventana, text = str(saldobill1*bill1 + saldobill2*bill2 + saldobill3*bill3 + saldobill4*bill4 + saldobill5*bill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalbilletesaldo_Label.grid(row = 12, column = 6)
 
-    totalcajerosaldo_Label = tk.Label(cargar_ventana, text = str(saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3 + saldobill1*bill1 + saldobill2*bill2 + saldobill3*bill3 + saldobill4*bill4 + saldobill5*bill5), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcajerosaldo_Label = tk.Label(cargar_ventana, text = str((saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3) / 100 + saldobill1*bill1 + saldobill2*bill2 + saldobill3*bill3 + saldobill4*bill4 + saldobill5*bill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcajerosaldo_Label.grid(row = 13, column = 6)
 
 
@@ -636,12 +641,12 @@ def cargar():
             billete4.set("0")
         if  billete5.get() == "" or  int(billete5.get()) < 0:
             billete5.set("0")
-        totalmonedacarga1_Label['text'] = str(int(moneda1.get()) + int(moneda2.get()) + int(moneda3.get()))
+        totalmonedacarga1_Label['text'] = str((int(moneda1.get()) + int(moneda2.get()) + int(moneda3.get())))
         totalbilletecarga1_Label['text'] = str(int(billete1.get()) + int(billete2.get()) + int(billete3.get()) + int(billete4.get()) + int(billete5.get()))
-        totalcoin1carga2_Label['text'] = str(int(moneda1.get()) *  coin1)
-        totalcoin2carga2_Label['text'] = str(int(moneda2.get()) *  coin2)
-        totalcoin3carga2_Label['text'] = str(int(moneda3.get()) *  coin3)
-        totalmonedacarga2_Label['text'] = str(int(moneda1.get()) *  coin1 + int(moneda2.get()) *  coin2 + int(moneda3.get()) *  coin3)
+        totalcoin1carga2_Label['text'] = str((int(moneda1.get()) *  coin1)/100)
+        totalcoin2carga2_Label['text'] = str((int(moneda2.get()) *  coin2)/100)
+        totalcoin3carga2_Label['text'] = str((int(moneda3.get()) *  coin3)/100)
+        totalmonedacarga2_Label['text'] = str((int(moneda1.get()) *  coin1 + int(moneda2.get()) *  coin2 + int(moneda3.get()) *  coin3)/100)
         totalbill1carga2_Label['text'] = str(int(billete1.get()) *  bill1)
         totalbill2carga2_Label['text'] = str(int(billete2.get()) *  bill2)
         totalbill3carga2_Label['text'] = str(int(billete3.get()) *  bill3)
@@ -658,10 +663,10 @@ def cargar():
         cantidadbill4saldo_Label['text'] = str(saldobill4 + int(billete4.get()))
         cantidadbill5saldo_Label['text'] = str(saldobill5 + int(billete5.get()))
         cantidadbilletesaldo_Label['text'] = str(saldobill1 + int(billete1.get()) + saldobill2+ int(billete2.get()) + saldobill3 + int(billete3.get()) + saldobill4 + int(billete4.get()) + saldobill5 + int(billete5.get()))
-        totalcoin1saldo_Label['text'] = str((saldocoin1 +  int(moneda1.get())) *coin1)
-        totalcoin2saldo_Label['text'] = str((saldocoin2 +  int(moneda2.get())) *coin2)
-        totalcoin3saldo_Label['text'] = str((saldocoin3 +  int(moneda3.get())) *coin3)
-        totalmonedasaldo_Label['text'] = str((saldocoin1 +  int(moneda1.get())) *coin1 + (saldocoin2 +  int(moneda2.get())) *coin2 + (saldocoin3 +  int(moneda3.get())) *coin3)
+        totalcoin1saldo_Label['text'] = str(((saldocoin1 +  int(moneda1.get())) *coin1)/100)
+        totalcoin2saldo_Label['text'] = str(((saldocoin2 +  int(moneda2.get())) *coin2)/100)
+        totalcoin3saldo_Label['text'] = str(((saldocoin3 +  int(moneda3.get())) *coin3)/100)
+        totalmonedasaldo_Label['text'] = str(((saldocoin1 +  int(moneda1.get())) *coin1 + (saldocoin2 +  int(moneda2.get())) *coin2 + (saldocoin3 +  int(moneda3.get())) *coin3)/100)
         totalbill1saldo_Label['text'] = str((saldobill1 + int(billete1.get())) * bill1)
         totalbill2saldo_Label['text'] = str((saldobill2 + int(billete2.get())) * bill2)
         totalbill3saldo_Label['text'] = str((saldobill3 + int(billete3.get())) * bill3)
@@ -748,7 +753,7 @@ def saldo():
     totalentrada_label.grid(row = 2, column = 2)
     
     saldosalidas_label = tk.Label(saldo_ventana, text = "SALIDAS", font = ("Microsoft YaHei", 14),bg = blanco) 
-    saldosalidas_label.grid(row = 1, column = 3)
+    saldosalidas_label.grid(row = 1, column = 3, columnspan = 2)
 
     cantidadsalidas_label = tk.Label(saldo_ventana, text = "CANTIDAD", font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadsalidas_label.grid(row = 2, column = 3)
@@ -757,7 +762,7 @@ def saldo():
     totalsalidas_label.grid(row = 2, column = 4)
     
     saldosaldo_label = tk.Label(saldo_ventana, text = "SALDO", font = ("Microsoft YaHei", 14),bg = blanco) 
-    saldosaldo_label.grid(row = 1, column = 5)
+    saldosaldo_label.grid(row = 1, column = 5, columnspan = 2)
 
     cantidadsaldo_label = tk.Label(saldo_ventana, text = "CANTIDAD", font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadsaldo_label.grid(row = 2, column = 5)
@@ -836,16 +841,16 @@ def saldo():
     cantidadbilletesentrada_Label = tk.Label(saldo_ventana, text = str(entradabill1 + entradabill2 +entradabill3 +entradabill4 +entradabill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadbilletesentrada_Label.grid(row = 12, column = 1)
 
-    totalcoin1entrada_Label = tk.Label(saldo_ventana, text = str(entradacoin1 * coin1), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin1entrada_Label = tk.Label(saldo_ventana, text = str((entradacoin1 * coin1)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin1entrada_Label.grid(row = 3, column = 2)
 
-    totalcoin2entrada_Label = tk.Label(saldo_ventana, text = str(entradacoin2 * coin2), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin2entrada_Label = tk.Label(saldo_ventana, text = str((entradacoin2 * coin2)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin2entrada_Label.grid(row = 4, column = 2)
 
-    totalcoin3entrada_Label = tk.Label(saldo_ventana, text = str(entradacoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin3entrada_Label = tk.Label(saldo_ventana, text = str((entradacoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin3entrada_Label.grid(row = 5, column = 2)
 
-    totalmonedaentrada_Label = tk.Label(saldo_ventana, text = str(entradacoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalmonedaentrada_Label = tk.Label(saldo_ventana, text = str((entradacoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalmonedaentrada_Label.grid(row = 6, column = 2)
 
     totalbill1entrada_Label = tk.Label(saldo_ventana, text = str(entradabill1 * bill1), font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -898,16 +903,16 @@ def saldo():
     cantidadbilletessalida_Label = tk.Label(saldo_ventana, text = str(salidabill1 + salidabill2 +salidabill3 +salidabill4 +salidabill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadbilletessalida_Label.grid(row = 12, column = 3)
 
-    totalcoin1salida_Label = tk.Label(saldo_ventana, text = str(salidacoin1 * coin1), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin1salida_Label = tk.Label(saldo_ventana, text = str((salidacoin1 * coin1)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin1salida_Label.grid(row = 3, column = 4)
 
-    totalcoin2salida_Label = tk.Label(saldo_ventana, text = str(salidacoin2 * coin2), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin2salida_Label = tk.Label(saldo_ventana, text = str((salidacoin2 * coin2)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin2salida_Label.grid(row = 4, column = 4)
 
-    totalcoin3salida_Label = tk.Label(saldo_ventana, text = str(salidacoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin3salida_Label = tk.Label(saldo_ventana, text = str((salidacoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin3salida_Label.grid(row = 5, column = 4)
 
-    totalmonedasalida_Label = tk.Label(saldo_ventana, text = str(salidacoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalmonedasalida_Label = tk.Label(saldo_ventana, text = str((salidacoin1 * coin1 + salidacoin2 * coin2+ salidacoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalmonedasalida_Label.grid(row = 6, column = 4)
 
     totalbill1salida_Label = tk.Label(saldo_ventana, text = str(salidabill1 * bill1), font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -959,16 +964,16 @@ def saldo():
     cantidadbilletesaldo_Label = tk.Label(saldo_ventana, text = str(saldobill1 + saldobill2 + saldobill3 + saldobill4 + saldobill5), font = ("Microsoft YaHei", 14),bg = blanco) 
     cantidadbilletesaldo_Label.grid(row = 12, column = 5)
 
-    totalcoin1saldo_Label = tk.Label(saldo_ventana, text = str(saldocoin1 * coin1), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin1saldo_Label = tk.Label(saldo_ventana, text = str((saldocoin1 * coin1)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin1saldo_Label.grid(row = 3, column = 6)
 
-    totalcoin2saldo_Label = tk.Label(saldo_ventana, text = str(saldocoin2 * coin2), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin2saldo_Label = tk.Label(saldo_ventana, text = str((saldocoin2 * coin2)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin2saldo_Label.grid(row = 4, column = 6)
 
-    totalcoin3saldo_Label = tk.Label(saldo_ventana, text = str(saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalcoin3saldo_Label = tk.Label(saldo_ventana, text = str((saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalcoin3saldo_Label.grid(row = 5, column = 6)
 
-    totalmonedasaldo_Label = tk.Label(saldo_ventana, text = str(saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3), font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalmonedasaldo_Label = tk.Label(saldo_ventana, text = str((saldocoin1 * coin1 + saldocoin2 * coin2+ saldocoin3 * coin3)/100), font = ("Microsoft YaHei", 14),bg = blanco) 
     totalmonedasaldo_Label.grid(row = 6, column = 6)
 
     totalbill1saldo_Label = tk.Label(saldo_ventana, text = str(saldobill1 * bill1), font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -994,8 +999,98 @@ def saldo():
 
 def ingreso():
 
-    def calcularingreso():
-        pass
+    def calcularingreso(fechainicio,fechafin):
+        global parqueo
+        global ingresotarjeta
+        global detalle_de_uso
+        print("fechafin", fechafin)
+        ingresosefectivo = 0
+        ingresostarjeta = 0
+        ingresosestimados = 0
+        fechainicio = fechainicio.split("/")
+        dia1 = fechainicio[0]
+        mes1 = fechainicio[1]
+        year1 = fechainicio[2]
+        fechainicio = str(dia1) +"/" + str(mes1) + "/"+ str(year1)
+        while fechainicio != fechafin:
+            print("fecha inicio", fechainicio)
+            for elem in parqueo:
+                print("parqueo elem",parqueo[elem])
+                print(parqueo[elem][2])
+                if parqueo[elem][2]!= "":
+                    fecha = parqueo[elem][1].split()
+                    fecha = fecha[0]
+                    if fecha == fechainicio:
+                        if parqueo[elem][3] != 0:
+                            j = 0
+                            while j < len(ingresotarjeta):
+                                if parqueo[elem][0] == ingresotarjeta[j][1]:
+                                    ingresostarjeta += parqueo[elem][3]
+                                    break
+                                j += 1
+                            if j == len(ingresotarjeta):
+                                ingresosefectivo += parqueo[elem][3]
+            for carro in detalle_de_uso:
+                print(carro)
+                if carro[2] != "":
+                    fecha = carro[2].split()
+                    fecha = fecha[0]
+                    if fecha == fechainicio:
+                        if carro[3] != 0:
+                            j = 0
+                            while j < len(ingresotarjeta):
+                                if carro[0] == ingresotarjeta[j][1]:
+                                    ingresostarjeta += carro[3]
+                                    break
+                                j += 1
+                            if j == len(ingresotarjeta):
+                                ingresosefectivo += carro[3]
+            nuevafecha = date(int(year1), int(mes1), int(dia1))
+            nuevafecha += timedelta(days = 1)
+            fechainicio = nuevafecha.strftime("%d/%m/%Y")
+            fechainicio = fechainicio.split("/")
+            dia1 = fechainicio[0]
+            mes1 = fechainicio[1]
+            year1 = fechainicio[2]
+            fechainicio = str(dia1) +"/" + str(mes1) + "/"+ str(year1)
+
+        totalefectivonum_Label['text'] = ingresosefectivo
+        totaltarjetanum_Label['text'] = ingresostarjeta
+        totalingresosnum_Label['text'] = (ingresostarjeta + ingresosefectivo)
+
+
+        for elem in parqueo:
+            montoestimado = 0
+            print("parqueo elem estimado",parqueo[elem])
+            print(parqueo[elem][2])
+            if parqueo[elem][2] == "":
+                fecha = parqueo[elem][1]
+                fechalista = fecha.split()
+                fecha = fechalista[0].split("/")
+                tiempo=fechalista[1].split(":")
+                date1 = datetime(int(fecha[2]), int(fecha[1]), int(fecha[0]), int(tiempo[0]), int(tiempo[1]), int(tiempo[2]))
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                fechalista = dt_string.split()
+                fecha2 = fechalista[0].split("/")
+                tiempo2=fechalista[1].split(":")
+                date2 = datetime(int(fecha2[2]), int(fecha2[1]), int(fecha2[0]), int(tiempo2[0]), int(tiempo2[1]), int(tiempo2[2]))
+                print(date1)
+                print(date2)
+                difference = date2 - date1
+                print(difference)
+                difference = difference.total_seconds() / 60
+                if difference < 60:
+                    montoestimado = configuracion[2]
+                else:
+                    montoestimado = configuracion[1] / 60 * difference
+                    montoestimado = "{:.2f}".format(montoestimado)
+                    montoestimado= float(montoestimado)
+            ingresosestimados += montoestimado
+        estimadosingresosnum_Label['text'] = ingresosestimados
+                
+
+
 
     ingreso_ventana = tk.Toplevel(ventana)
     ingreso_ventana.title("Ingreso")
@@ -1022,7 +1117,7 @@ def ingreso():
     totalefectivo_Label.grid(row = 3, column = 0)
     totaltarjeta_Label = tk.Label(ingreso_ventana, text = "TOTAL DE INGRESOS EN TARJETA", font = ("Microsoft YaHei", 14),bg = blanco) 
     totaltarjeta_Label.grid(row = 4, column = 0)
-    totalingresos_Label = tk.Label(ingreso_ventana, text = "TOTAL DE INGRESOS EN EFECTIVO", font = ("Microsoft YaHei", 14),bg = blanco) 
+    totalingresos_Label = tk.Label(ingreso_ventana, text = "TOTAL DE INGRESOS POR RECIBIR", font = ("Microsoft YaHei", 14),bg = blanco) 
     totalingresos_Label.grid(row = 5, column = 0)
     estimadosingresos_Label = tk.Label(ingreso_ventana, text = "ESTIMADO DE INGRESOS POR RECIBIR", font = ("Microsoft YaHei", 14),bg = blanco) 
     estimadosingresos_Label.grid(row = 6, column = 0)
@@ -1036,10 +1131,10 @@ def ingreso():
     estimadosingresosnum_Label = tk.Label(ingreso_ventana, text = "X", font = ("Microsoft YaHei", 14),bg = blanco) 
     estimadosingresosnum_Label.grid(row = 6, column = 1)
 
-    okingreso_button = tk.Button(ingreso_ventana, text = "OK", command = lambda: cerrarventana(ingreso_ventana), bg = blanco, height = 2, width = 12)
-    okingreso_button.grid(row = 16, column = 0, padx = 4, pady = 4)  
-    calcularingreso_button = tk.Button(ingreso_ventana, text = "Cancelar", command = lambda: calcularingreso(ingreso_ventana), bg = blanco, height = 2, width = 12)
-    calcularingreso_button.grid(row = 16, column = 1, padx = 4, pady = 4)  
+    okingreso_button = tk.Button(ingreso_ventana, text = "Cancelar", command = lambda: cerrarventana(ingreso_ventana), bg = blanco, height = 2, width = 12)
+    okingreso_button.grid(row = 16, column = 1, padx = 4, pady = 4)  
+    calcularingreso_button = tk.Button(ingreso_ventana, text = "Calcular", command = lambda: calcularingreso(fechainicio.get(),fechafin.get()), bg = blanco, height = 2, width = 12)
+    calcularingreso_button.grid(row = 16, column = 0, padx = 4, pady = 4)  
 
 def entrada():
     global configuracion
@@ -1112,6 +1207,310 @@ def entrada():
     cancelarentrada_button.grid(row = 6, column = 1, padx = 4, pady = 4)
 
 def cajero():
+    def selectplate(placa):
+        global parqueo
+        global configuracion
+        global montoapagar
+        i = 0
+        while i <= len(parqueo) and montoapagar == -1:
+            if i in parqueo:
+                if parqueo[i][0] == placa:
+                    
+                    fecha = parqueo[i][1]
+                    fechalista = fecha.split()
+                    fecha = fechalista[0].split("/")
+                    tiempo=fechalista[1].split(":")
+                    date1 = datetime(int(fecha[2]), int(fecha[1]), int(fecha[0]), int(tiempo[0]), int(tiempo[1]), int(tiempo[2]))
+                    now = datetime.now()
+                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                    fechalista = dt_string.split()
+                    fecha2 = fechalista[0].split("/")
+                    tiempo2=fechalista[1].split(":")
+                    date2 = datetime(int(fecha2[2]), int(fecha2[1]), int(fecha2[0]), int(tiempo2[0]), int(tiempo2[1]), int(tiempo2[2]))
+                    print(date1)
+                    print(date2)
+                    difference = date2 - date1
+                    print(difference)
+                    tiempo1_label['text'] = parqueo[i][1]
+                    tiempo2_label['text'] = dt_string
+                    tiempousado_label['text'] = str(difference)
+                    difference = difference.total_seconds() / 60
+                    if difference < 60:
+                        montoapagar = configuracion[2]
+                    else:
+                        montoapagar = configuracion[1] / 60 * difference
+                        montoapagar = "{:.2f}".format(montoapagar)
+                        montoapagar= float(montoapagar)
+                    apagarmonto_label['text'] = montoapagar
+                     
+                    break
+            i += 1        
+        if i > len(parqueo):
+            print(parqueo)
+            print(detalle_de_uso)
+            messagebox.showinfo("Error", "ESA PLACA NO ESTÁ EN EL PARQUEO") # Se despliega un error si no es válido   
+
+    def vuelto():
+        global pagado
+        global configuracion
+        global montoporpagar
+        global saldocoin1 # Los saldos contienen la cantidad de billetes
+        global saldocoin2
+        global saldocoin3
+
+        global saldobill1
+        global saldobill2
+        global saldobill3
+        global saldobill4
+        global saldobill5   
+
+        global salidacoin1
+        global salidacoin2
+        global salidacoin3
+
+        global salidabill1
+        global salidabill2
+        global salidabill3
+        global salidabill4
+        global salidabill5
+
+        coin1 = configuracion[5]
+        coin2 = configuracion[6]
+        coin3 = configuracion[7]
+
+        bill1 = configuracion[8]
+        bill2 = configuracion[9]
+        bill3 = configuracion[10]
+        bill4 = configuracion[11]
+        bill5 = configuracion[12]
+
+        print(pagado)
+        print(montoapagar)
+        vuelto = pagado - montoapagar
+        print(vuelto)
+        vuelto = "{:.2f}".format(vuelto)
+        vuelto = vuelto.split(".")
+        entero = int(vuelto[0])
+        decimal = int(vuelto[1])
+        print(entero, decimal)
+        if saldobill5 > 0:
+            vueltobill5 = entero  //  bill5
+            if vueltobill5 >= saldobill5:
+                vueltobill5 = saldobill5
+            entero -= (vueltobill5 * bill5)
+            saldobill5 -= vueltobill5
+            salidabill5 += vueltobill5
+        else:
+            vueltobill5 = 0
+
+        if saldobill4 > 0:
+            vueltobill4 = entero  //  bill4
+            if vueltobill4 >= saldobill4:
+                vueltobill4 = saldobill4
+            entero -= (vueltobill4 * bill4)
+            saldobill4 -= vueltobill4
+            salidabill4+= vueltobill4
+        else:
+            vueltobill4 = 0
+
+        if saldobill3 > 0:
+            vueltobill3 = entero  //  bill3
+            if vueltobill3 >= saldobill3:
+                vueltobill3 = saldobill3
+            entero -= (vueltobill3 * bill3)
+            saldobill3 -= vueltobill3
+            salidabill3 += vueltobill3
+        else:
+            vueltobill3 = 0
+
+        if saldobill2 > 0:
+            vueltobill2 = entero  //  bill2
+            if vueltobill2 >= saldobill2:
+                vueltobill2 = saldobill2
+            entero -= (vueltobill2 * bill2)
+            saldobill2 -= vueltobill2
+            salidabill2 += vueltobill2
+        else:
+            vueltobill2 = 0
+
+        if saldobill1 > 0:
+            vueltobill1 = entero  //  bill1
+            if vueltobill1 >= saldobill1:
+                vueltobill1 = saldobill1
+            entero -= (vueltobill1 * bill1)
+            saldobill1 -= vueltobill1
+            salidabill1 += vueltobill1
+        else:
+            vueltobill1 = 0
+        print(entero)
+        if saldocoin3 > 0:
+            vueltocoin3 = decimal  //  (coin3)
+            if vueltocoin3 >= saldocoin3:
+                vueltocoin3 = saldocoin3
+            decimal -= (vueltocoin3 * (coin3))
+            saldocoin3 -= vueltocoin3
+            salidacoin3 += vueltocoin3
+        else:
+            vueltocoin3 = 0
+
+        if saldocoin2 > 0:
+            vueltocoin2 = decimal  //  (coin2)
+            if vueltocoin2 >= saldocoin2:
+                vueltocoin2 = saldocoin2
+            decimal -= (vueltocoin2 * (coin2))
+            saldocoin2 -= vueltocoin2
+            salidacoin2 += vueltocoin2
+        else:
+            vueltocoin2 = 0
+
+        if saldocoin1> 0:
+            vueltocoin1 = decimal  //  (coin1)
+            if vueltocoin1 >= saldocoin1:
+                vueltocoin1 = saldocoin1
+            decimal -= (vueltocoin1 *  (coin1))
+            saldocoin1 -= vueltocoin1
+            salidacoin1 += vueltocoin1
+        else:
+            vueltocoin1 = 0
+
+        print(decimal)
+        print(vueltobill5)
+        print(vueltobill4)
+        print(vueltobill3)
+        print(vueltobill2)
+        print(vueltobill1)
+        print(vueltocoin3)
+        print(vueltocoin2)
+        print(vueltocoin1)
+        vuelto = entero + decimal / 100
+        print(vuelto)
+        if vuelto > 0:
+            messagebox.showinfo("Error", "NO SE PUEDE DAR EL CAMBIO. SE ENVIÓ UN MENSAJE AL SUPERVISOR.") # Se despliega un error si no es válido   
+            anular_pago(cajero_ventana)
+            return False
+    
+        coin1cambio_label['text'] = vueltocoin1
+
+        coin2cambio_label['text'] = vueltocoin2
+
+        coin3cambio_label['text'] = vueltocoin3
+
+        bill1cambio_label['text'] = vueltobill1
+
+        bill2cambio_label['text'] = vueltobill2
+
+        bill3cambio_label['text'] = vueltobill3
+
+        bill4cambio_label['text'] = vueltobill4
+
+        bill5cambio_label['text'] = vueltobill5
+
+        if  (vueltocoin3 * coin3+ vueltocoin2 * coin2+ vueltocoin1 * coin1) >= 10:
+            cambiomonto_label['text'] = str(vueltobill5 * bill5 + vueltobill4 * bill4 + vueltobill3 * bill3 + vueltobill2 * bill2 + vueltobill1 * bill1) +"." + str(vueltocoin3 * coin3+ vueltocoin2 * coin2+ vueltocoin1 * coin1)
+        else:
+            cambiomonto_label['text'] = str(vueltobill5 * bill5 + vueltobill4 * bill4 + vueltobill3 * bill3 + vueltobill2 * bill2 + vueltobill1 * bill1) +".0" + str(vueltocoin3 * coin3+ vueltocoin2 * coin2+ vueltocoin1 * coin1)
+    
+    def pagar(denominacion, tipo,placa):
+        global montoapagar
+        global configuracion
+        global parqueo
+        global pagado
+
+        global saldocoin1 # Los saldos contienen la cantidad de billetes
+        global saldocoin2
+        global saldocoin3
+
+        global saldobill1
+        global saldobill2
+        global saldobill3
+        global saldobill4
+        global saldobill5
+
+        if montoapagar == -1:
+            return      
+        if tipo == "C":
+            pagado += (denominacion / 100)
+            pagado = "{:.2f}".format(pagado)
+            pagado= float(pagado)
+        elif tipo == "B":
+            pagado += denominacion
+        
+        pagadomonto_label['text'] = pagado
+        i = 0
+        if pagado >= montoapagar:
+            while i <= len(parqueo):
+                if i in parqueo:
+                    if parqueo[i][0] == placa:
+                        print(parqueo[i][2])
+                        if  parqueo[i][2] == "":
+                            now = datetime.now()
+                            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                            parqueo[i][2] = dt_string
+                            parqueo[i][3] = montoapagar
+                            sepuede = vuelto()
+                            if sepuede == False:
+                                return
+                            montoapagar = -1
+                            print(parqueo)
+                            messagebox.showinfo("Éxito", "SE HA REGISTRADO SU PAGO") # Se despliega un error si no es válido
+                        else:
+                            messagebox.showinfo("Error", "ESTA PLACA YA PAGÓ") # Se despliega un error si no es válido
+                            return
+                        break
+                i += 1        
+            if i > len(parqueo):
+                print(parqueo)
+                print(detalle_de_uso)
+                messagebox.showinfo("Error", "ESA PLACA NO ESTÁ EN EL PARQUEO") # Se despliega un error si no es válido   
+    
+    def pagartarjeta(placa, tarjeta):
+        global pagado
+        global montoapagar
+        global configuracion
+        global parqueo
+        global ingresotarjeta
+
+        if tarjeta == "":
+            return
+
+        if montoapagar == -1:
+            return      
+
+        pagado = montoapagar
+        print("t", pagado)
+        print("t",montoapagar)
+        pagadomonto_label['text'] = pagado
+        i = 0
+        if pagado >= montoapagar:
+            while i <= len(parqueo):
+                if i in parqueo:
+                    if parqueo[i][0] == placa:
+                        print(parqueo[i][2])
+                        if  parqueo[i][2] == "":
+                            now = datetime.now()
+                            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                            parqueo[i][2] = dt_string
+                            parqueo[i][3] = montoapagar
+                            sepuede = vuelto()
+                            if sepuede == False:
+                                return
+                            montoapagar = -1
+                            print(parqueo)
+                            ingresotarjeta.append([montoapagar, placa])
+                            messagebox.showinfo("Éxito", "SE HA REGISTRADO SU PAGO") # Se despliega un error si no es válido
+                        else:
+                            messagebox.showinfo("Error", "ESTA PLACA YA PAGÓ") # Se despliega un error si no es válido
+                            return
+                        break
+                i += 1        
+            if i > len(parqueo):
+                print(parqueo)
+                print(detalle_de_uso)
+                messagebox.showinfo("Error", "ESA PLACA NO ESTÁ EN EL PARQUEO") # Se despliega un error si no es válido   
+
+    def anular_pago(window):
+        cerrarventana(window)
+        cajero()
     global saldocoin1 # Los saldos contienen la cantidad de billetes
     global saldocoin2
     global saldocoin3
@@ -1123,7 +1522,11 @@ def cajero():
     global saldobill5
     global configuracion
     global parqueo
+    global pagado
+    global montoapagar
 
+    montoapagar= -1
+    pagado = 0
     coin1 = configuracion[5]
     coin2 = configuracion[6]
     coin3 = configuracion[7]
@@ -1134,21 +1537,13 @@ def cajero():
     bill4 = configuracion[11]
     bill5 = configuracion[12]
 
-    tiempo = "HH:MM"
-    tiempo2 = "HH:MM"
-    difference = "XXh YYm"
-
-    fecha1 = "dd/mm/aaaa"
-    fecha2 = "dd/mm/aaaa"
-
-
 
     cajero_ventana = tk.Toplevel(ventana)
     cajero_ventana.title("Cajero")
-    cajero_ventana.geometry("900x600")
+    cajero_ventana.geometry("900x700")
     cajero_ventana.configure(bg = blanco)
-    cajero_Label = tk.Label(cajero_ventana, text =  "CAJERO DEL PARQUEO", font = ("Microsoft YaHei", 36),bg = blanco) 
-    cajero_Label.grid(row = 0, column = 0, columnspan = 6)
+    cajero_Label = tk.Label(cajero_ventana, text =  "CAJERO DEL PARQUEO", font = ("Microsoft YaHei", 20),bg = blanco) 
+    cajero_Label.grid(row = 0, column = 0, columnspan = 2)
 
     pagoporhoratext = str(configuracion[1]) + " POR HORA"
     pagoporhora_label = tk.Label(cajero_ventana, text = pagoporhoratext, font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -1160,47 +1555,129 @@ def cajero():
     placa = tk.IntVar()
     placaentry = tk.Entry(cajero_ventana, textvariable = placa)
     placaentry.grid(row = 1, column = 1)
-    while i <= len(parqueo):
-        if i in parqueo:
-            if parqueo[i][0] == placa:
-                
-                fecha = parqueo[i][1]
-                fechalista = fecha.split()
-                fecha = fechalista[0].split("/")
-                tiempo=fechalista[1].split(":")
-                date1 = datetime(int(fecha[2]), int(fecha[1]), int(fecha[0]), int(tiempo[0]), int(tiempo[1]), int(tiempo[2]))
-                now = datetime.now()
-                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                fechalista = dt_string.split()
-                fecha2 = fechalista[0].split("/")
-                tiempo2=fechalista[1].split(":")
-                date2 = datetime(int(fecha2[2]), int(fecha2[1]), int(fecha2[0]), int(tiempo2[0]), int(tiempo2[1]), int(tiempo2[2]))
-                print(date1)
-                print(date2)
-                difference = date2 - date1
-                print(difference)
-                difference = difference.total_seconds() / 60
-                print(difference)
-                break
-        i += 1        
-    if i > len(parqueo):
-        print(parqueo)
-        print(detalle_de_uso)
-        messagebox.showinfo("Error", "ESA PLACA NO ESTÁ EN EL PARQUEO") # Se despliega un error si no es válido   
-    
+       
     horadeentrada_label = tk.Label(cajero_ventana, text = "HORA DE ENTRADA", font = ("Microsoft YaHei", 14),bg = blanco) 
     horadeentrada_label.grid(row = 2, column = 0)
     horadesalida_label = tk.Label(cajero_ventana, text = "HORA DE SALIDA", font = ("Microsoft YaHei", 14),bg = blanco) 
     horadesalida_label.grid(row = 3, column = 0)
     tiempocobrado_label = tk.Label(cajero_ventana, text = "TIEMPO COBRADO", font = ("Microsoft YaHei", 14),bg = blanco) 
-    tiempocobrado_label.grid(row = 3, column = 0)
+    tiempocobrado_label.grid(row = 4, column = 0)
         
-    tiempo1_label = tk.Label(cajero_ventana, text = "HORA DE ENTRADA", font = ("Microsoft YaHei", 14),bg = blanco) 
-    tiempo1_label.grid(row = 2, column = 0)
-    horadesalida_label = tk.Label(cajero_ventana, text = "HORA DE SALIDA", font = ("Microsoft YaHei", 14),bg = blanco) 
-    horadesalida_label.grid(row = 3, column = 0)
-    tiempocobrado_label = tk.Label(cajero_ventana, text = "TIEMPO COBRADO", font = ("Microsoft YaHei", 14),bg = blanco) 
-    tiempocobrado_label.grid(row = 3, column = 0)
+    tiempo1_label = tk.Label(cajero_ventana, text = "DD/MM/AAAA HH:MM:SS", font = ("Microsoft YaHei", 14),bg = blanco) 
+    tiempo1_label.grid(row = 2, column = 1)
+    tiempo2_label = tk.Label(cajero_ventana, text = "DD/MM/AAAA HH:MM:SS", font = ("Microsoft YaHei", 14),bg = blanco) 
+    tiempo2_label.grid(row = 3, column = 1)
+    tiempousado_label = tk.Label(cajero_ventana, text = "XXh YYm ZZs", font = ("Microsoft YaHei", 14),bg = blanco) 
+    tiempousado_label.grid(row = 4, column = 1)
+
+    seleccionarplaca_button = tk.Button(cajero_ventana, text = "Seleccionar", command = lambda: selectplate(placa.get()), bg = blanco, height = 2, width = 12)
+    seleccionarplaca_button.grid(row = 1, column = 2, padx = 4, pady = 4)  
+
+    paso2_label = tk.Label(cajero_ventana, text = "Paso 2: SU PAGO EN:", font = ("Microsoft YaHei", 14),bg = blanco) 
+    paso2_label.grid(row = 2, column = 0)
+
+    monedas_label = tk.Label(cajero_ventana, text = "MONEDAS", font = ("Microsoft YaHei", 14),bg = blanco) 
+    monedas_label.grid(row = 5, column = 1)
+
+    billetes_label = tk.Label(cajero_ventana, text = "BILLETES", font = ("Microsoft YaHei", 14),bg = blanco) 
+    billetes_label.grid(row = 5, column = 2)
+
+    tarjeta_label = tk.Label(cajero_ventana, text = "TARJETA DE CRÉDITO", font = ("Microsoft YaHei", 14),bg = blanco) 
+    tarjeta_label.grid(row = 5, column = 3)
+
+    coin1_button = tk.Button(cajero_ventana, text = coin1, command = lambda: pagar(coin1,"C",placa.get()), bg = "#ad8911", height = 2, width = 12)
+    coin1_button.grid(row = 6, column = 1, padx = 4, pady = 4)  
+
+    coin2_button = tk.Button(cajero_ventana, text = coin2, command = lambda: pagar(coin2,"C",placa.get()), bg = "#ad8911", height = 2, width = 12)
+    coin2_button.grid(row = 7, column = 1, padx = 4, pady = 4)  
+
+    coin3_button = tk.Button(cajero_ventana, text = coin3, command = lambda: pagar(coin3,"C",placa.get()), bg = "#ad8911", height = 2, width = 12)
+    coin3_button.grid(row = 8, column = 1, padx = 4, pady = 4)  
+
+    billete1_button = tk.Button(cajero_ventana, text = bill1, command = lambda: pagar(bill1,"B",placa.get()), bg = "#29c440", height = 2, width = 12)
+    billete1_button.grid(row = 6, column = 2, padx = 4, pady = 4)  
+
+    billete2_button = tk.Button(cajero_ventana, text = bill2, command = lambda: pagar(bill2,"B",placa.get()), bg = "#29c440", height = 2, width = 12)
+    billete2_button.grid(row = 7, column = 2, padx = 4, pady = 4)  
+
+    billete3_button = tk.Button(cajero_ventana, text = bill3, command = lambda: pagar(bill3,"B",placa.get()), bg = "#29c440", height = 2, width = 12)
+    billete3_button.grid(row = 8, column = 2, padx = 4, pady = 4)  
+
+    billete4_button = tk.Button(cajero_ventana, text = bill4, command = lambda: pagar(bill4,"B",placa.get()), bg = "#29c440", height = 2, width = 12)
+    billete4_button.grid(row = 9, column = 2, padx = 4, pady = 4)  
+
+    billete5_button = tk.Button(cajero_ventana, text = bill5, command = lambda: pagar(bill5,"B",placa.get()), bg = "#29c440", height = 2, width = 12)
+    billete5_button.grid(row = 10, column = 2, padx = 4, pady = 4)  
+
+    tarjeta = tk.StringVar()
+    tarjetaentry = tk.Entry(cajero_ventana, textvariable = tarjeta)
+    tarjetaentry.grid(row = 6, column = 3)
+
+    seleccionartarjeta_button = tk.Button(cajero_ventana, text = "Aceptar", command = lambda: pagartarjeta(placa.get(),tarjeta.get()), bg = blanco, height = 2, width = 12)
+    seleccionartarjeta_button.grid(row = 7, column = 3, padx = 4, pady = 4)  
+
+
+    apagar_label = tk.Label(cajero_ventana, text = "A PAGAR", font = ("Microsoft YaHei", 14),bg = blanco) 
+    apagar_label.grid(row = 2, column = 4)
+
+    apagarmonto_label = tk.Label(cajero_ventana, text = "XXXXX", font = ("Microsoft YaHei", 18),bg = "#d4020d") 
+    apagarmonto_label.grid(row = 3, column = 4)
+
+    pagado_label = tk.Label(cajero_ventana, text = "Pagado", font = ("Microsoft YaHei", 14),bg = blanco) 
+    pagado_label.grid(row = 4, column = 4)
+
+    pagadomonto_label = tk.Label(cajero_ventana, text = "XXXXX", font = ("Microsoft YaHei", 14),bg = "#90de93") 
+    pagadomonto_label.grid(row = 5, column = 4)
+
+    cambio_label = tk.Label(cajero_ventana, text = "Cambio", font = ("Microsoft YaHei", 14),bg = blanco) 
+    cambio_label.grid(row = 6, column = 4)
+
+    cambiomonto_label = tk.Label(cajero_ventana, text = "XXXXX", font = ("Microsoft YaHei", 14),bg = "#90de93") 
+    cambiomonto_label.grid(row = 7, column = 4)
+
+    paso3_label = tk.Label(cajero_ventana, text = "Paso 2: SU CAMBIO EN", font = ("Microsoft YaHei", 14),bg = blanco) 
+    paso3_label.grid(row = 11, column = 0)
+
+    monedascambio_label = tk.Label(cajero_ventana, text = "MONEDAS", font = ("Microsoft YaHei", 14),bg = blanco) 
+    monedascambio_label.grid(row = 11, column = 1)
+
+    billetescambio_label = tk.Label(cajero_ventana, text = "BILLETES", font = ("Microsoft YaHei", 14),bg = blanco) 
+    billetescambio_label.grid(row = 11, column = 2)
+    
+    coin1text = "XXX de " + str(coin1) 
+    coin1cambio_label = tk.Label(cajero_ventana, text = coin1text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    coin1cambio_label.grid(row = 12, column = 1)
+
+    coin2text = "XXX de " + str(coin2) 
+    coin2cambio_label = tk.Label(cajero_ventana, text = coin2text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    coin2cambio_label.grid(row = 13, column = 1)
+
+    coin3text = "XXX de " + str(coin3) 
+    coin3cambio_label = tk.Label(cajero_ventana, text = coin3text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    coin3cambio_label.grid(row = 14, column = 1)
+
+    bill1text = "XXX de " + str(bill1) 
+    bill1cambio_label = tk.Label(cajero_ventana, text = bill1text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    bill1cambio_label.grid(row = 12, column = 2)
+
+    bill2text = "XXX de " + str(bill2) 
+    bill2cambio_label = tk.Label(cajero_ventana, text = bill2text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    bill2cambio_label.grid(row = 13, column = 2)
+
+    bill3text = "XXX de " + str(bill3) 
+    bill3cambio_label = tk.Label(cajero_ventana, text = bill3text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    bill3cambio_label.grid(row = 14, column = 2)
+
+    bill4text = "XXX de " + str(bill4) 
+    bill4cambio_label = tk.Label(cajero_ventana, text = bill4text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    bill4cambio_label.grid(row = 15, column = 2)
+
+    bill5text = "XXX de " + str(bill5) 
+    bill5cambio_label = tk.Label(cajero_ventana, text = bill5text, font = ("Microsoft YaHei", 14),bg = blanco) 
+    bill5cambio_label.grid(row = 16, column = 2)
+
+    anularpago_button = tk.Button(cajero_ventana, text = "Anular pago", command = lambda: anular_pago(cajero_ventana), bg = blanco, height = 2, width = 12)
+    anularpago_button.grid(row = 17, column = 0, padx = 4, pady = 4)  
 
 
 
@@ -1211,6 +1688,7 @@ def salida():
         global parqueo
         global detalle_de_uso
         print(placa)
+        seborro = False
         i = 1
         while i <= len(parqueo):
             if i in parqueo:
@@ -1241,6 +1719,7 @@ def salida():
                     detalle_de_uso.append(nuevodetalle)
                     if difference <= configuracion[4]:
                         print("se borro")
+                        seborro = True
                         del parqueo[i]
                         print(parqueo)
                         print(detalle_de_uso)
@@ -1259,7 +1738,7 @@ def salida():
                         messagebox.showinfo("Error", texto) # Se despliega un error si no es válido
                     break
             i += 1        
-        if i > len(parqueo):
+        if i > len(parqueo) and seborro == False:
             print(parqueo)
             print(detalle_de_uso)
             messagebox.showinfo("Error", "ESA PLACA NO ESTÁ EN EL PARQUEO") # Se despliega un error si no es válido   
@@ -1304,7 +1783,7 @@ ingreso_button.grid(row = 1, column = 3, padx = 4, pady = 4)
 entrada_button = tk.Button(ventana, text = "Entrada del \n vehículo", command = lambda: entrada(), bg = select_color, height = 2, width = 10)
 entrada_button.grid(row = 1, column = 4, padx = 4, pady = 4)
 cajero_button = tk.Button(ventana, text = "Cajero del \n parqueo", command = lambda: cajero(), bg = select_color, height = 2, width = 10)
-cargar_button.grid(row = 1, column = 5, padx = 4, pady = 4)
+cajero_button.grid(row = 1, column = 5, padx = 4, pady = 4)
 salida_button = tk.Button(ventana, text = "Salida del \n vehículo", command = lambda: salida(), bg = select_color, height = 2, width = 10)
 salida_button.grid(row = 1, column = 6, padx = 4, pady = 4)
 ayuda_button = tk.Button(ventana, text = "Ayuda", command = lambda: ayuda(), bg = select_color, height = 2, width = 10)
