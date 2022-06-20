@@ -2,12 +2,63 @@ from distutils.command.config import config
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-import time
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
-import random
 import os
+import smtplib
+from fpdf import FPDF
+
+
+EMAIL_ADDRESS = os.environ.get('DB_USER')
+EMAIL_PASSWORD = os.environ.get('DB_PASSWORD')
+
+def enviar_correo(subject, body):
+    global configuracion
+    global  EMAIL_ADDRESS
+    global EMAIL_PASSWORD
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+
+        msg = f'Subject: {subject}\n\n{body}'
+
+        smtp.sendmail(EMAIL_ADDRESS, 'supervisor.parqueo.dgr@gmail.com', msg)
+
+def imprimir_recibo(montoapagar, horaentrada, horasalida, tiempocobrado, placa):
+
+    pdf = FPDF()
+
+    pdf.add_page()
+
+    pdf.set_font("Arial", size = 20)
+
+    pdf.cell(200,10, txt = "Factura Cajero", ln = 1, align = "C")
+
+    pdf.set_font("Arial", size = 16)
+
+    placatext =  "Placa del vehículo: " + str(placa)
+    horaentradatxt = "Fecha de entrada: " + str(horaentrada)
+    horasalidatxt = "Fecha de salida: " + str(horasalida)
+    tiempocobradotxt = "Tiempo cobrado: " + str(tiempocobrado)
+    montocobradotxt = "Monto cobrado: " + str(montoapagar)
+
+    pdf.cell(200,10, txt = placatext, ln = 3, align = "L")
+    pdf.cell(200,10, txt = horaentradatxt, ln = 4, align = "L")
+    pdf.cell(200,10, txt = horasalidatxt, ln = 5, align = "L")
+    pdf.cell(200,10, txt = tiempocobradotxt, ln = 6, align = "L")
+    pdf.cell(200,10, txt = montocobradotxt, ln = 7, align = "L")
+
+    nombrepdf = "Factura_" + str(placa) + ".pdf"
+
+    pdf.output(nombrepdf)
+
+
+
 
 # Colores
 
@@ -19,11 +70,11 @@ wait_color = "#ff0000"
 
 # Variables importantes
 
-parqueo = {1:[606393, "17/06/2022 8:57:30", "", 0], 2:[54321, "17/06/2022 8:57:30", "18/06/2022 8:57:30", 30]}
+parqueo = {1:[606393, "19/06/2022 10:57:30", "", 0], 2:[54321, "17/06/2022 8:57:30", "19/06/2022 12:00:30", 30]}
 detalle_de_uso = [[12345, "16/06/2022 3:23:15", "16/06/2022 3:39:31", 25.00, 2],[24132, "20/06/2022 3:23:15", "20/06/2022 3:39:31", 35.00, 2]]
 ingresotarjeta = [[35.00, 24132]]
 
-configuracion = [30, 5, 3, "diego@gmail.com", 15, 1, 5, 10, 1, 5, 10, 20, 50]
+configuracion = [30, 5, 3, 'supervisor.parqueo.dgr@gmail.com', 15, 1, 5, 10, 1, 5, 10, 20, 50]
 saldocoin1 = 100
 saldocoin2 = 100
 saldocoin3 = 100
@@ -54,12 +105,20 @@ salidabill3 = 0
 salidabill4 = 0
 salidabill5 = 0
 
+
+
 # Funciones
 def cerrarventana(window):
     window.destroy()
     window.update()    
 
+
+
+
+
 def configurar():
+    if len(parqueo) > 0:
+        return
 
     def guardarconfig(cantidadcarros, price, pagomin, correosuper, minutosmax, coin1, coin2, coin3, bill1, bill2, bill3, bill4, bill5):
         if cantidadcarros < 1:
@@ -249,11 +308,11 @@ def configurar():
 
 
      
-    saveconfig_button = tk.Button(configurar_ventana, text = "Guardar tiempo", command = lambda: guardarconfig(car.get(), precio.get(), \
+    saveconfig_button = tk.Button(configurar_ventana, text = "Guardar configuración", command = lambda: guardarconfig(car.get(), precio.get(), \
         minpay.get(), emailsuper.get(), minmax.get(), moneda1.get(), moneda2.get(), moneda3.get(), billete1.get(), billete2.get(), \
-            billete3.get(), billete4.get(), billete5.get()), bg = blanco, height = 2, width = 12)
+            billete3.get(), billete4.get(), billete5.get()), bg = blanco, height = 2, width = 20)
     saveconfig_button.grid(row = 16, column = 0, padx = 4, pady = 4)    
-    cancelconfig_button = tk.Button(configurar_ventana, text = "Guardar tiempo", command = lambda: cerrarventana(configurar_ventana), bg = blanco, height = 2, width = 12)
+    cancelconfig_button = tk.Button(configurar_ventana, text = "Cancelar", command = lambda: cerrarventana(configurar_ventana), bg = blanco, height = 2, width = 12)
     cancelconfig_button.grid(row = 16, column = 1, padx = 4, pady = 4)   
 
 
@@ -289,15 +348,15 @@ def cargar():
         saldobill4 = int(cantidadbill4saldo_Label['text'] )
         saldobill5 = int(cantidadbill5saldo_Label['text'] )
 
-        entradacoin1 += saldocoin1
-        entradacoin2 += saldocoin2
-        entradacoin3 += saldocoin3
+        entradacoin1 = int(cantidadcoin1saldo_Label['text'])
+        entradacoin2 = int(cantidadcoin2saldo_Label['text']) 
+        entradacoin3 = int(cantidadcoin3saldo_Label['text'])
 
-        entradabill1 += saldobill1
-        entradabill2 += saldobill2
-        entradabill3 += saldobill3
-        entradabill4 += saldobill4
-        entradabill5 += saldobill5
+        entradabill1 = int(cantidadbill1saldo_Label['text'] )
+        entradabill2 = int(cantidadbill2saldo_Label['text'] )
+        entradabill3 = int(cantidadbill3saldo_Label['text'])
+        entradabill4 = int(cantidadbill4saldo_Label['text'] )
+        entradabill5 = int(cantidadbill5saldo_Label['text'] )
 
         cerrarventana(window)
 
@@ -1160,7 +1219,7 @@ def entrada():
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     espacios = False
     
-    espacios_Label = tk.Label(entrada_ventana, text ="", font = ("Microsoft YaHei", 14),bg = blanco) 
+    espacios_Label = tk.Label(entrada_ventana, text = "", font = ("Microsoft YaHei", 14),bg = blanco) 
     espacios_Label.grid(row = 1, column = 0)
 
     if (configuracion[0] - len(parqueo)) > 0:
@@ -1170,7 +1229,7 @@ def entrada():
                 i += 1
             else:
                 campoasignado = i
-                espacios_Label.config(text = str(configuracion[0] - len(parqueo)))
+                espacios_Label.config(text = "Espacios disponibles: " + str(configuracion[0] - len(parqueo)))
                 espacios = True
                 break
     else:
@@ -1211,6 +1270,7 @@ def cajero():
         global parqueo
         global configuracion
         global montoapagar
+        global tiempocobrado
         i = 0
         while i <= len(parqueo) and montoapagar == -1:
             if i in parqueo:
@@ -1229,12 +1289,12 @@ def cajero():
                     date2 = datetime(int(fecha2[2]), int(fecha2[1]), int(fecha2[0]), int(tiempo2[0]), int(tiempo2[1]), int(tiempo2[2]))
                     print(date1)
                     print(date2)
-                    difference = date2 - date1
-                    print(difference)
+                    tiempocobrado = date2 - date1
+                    print(tiempocobrado)
                     tiempo1_label['text'] = parqueo[i][1]
                     tiempo2_label['text'] = dt_string
-                    tiempousado_label['text'] = str(difference)
-                    difference = difference.total_seconds() / 60
+                    tiempousado_label['text'] = str(tiempocobrado)
+                    difference = tiempocobrado.total_seconds() / 60
                     if difference < 60:
                         montoapagar = configuracion[2]
                     else:
@@ -1386,24 +1446,51 @@ def cajero():
         print(vuelto)
         if vuelto > 0:
             messagebox.showinfo("Error", "NO SE PUEDE DAR EL CAMBIO. SE ENVIÓ UN MENSAJE AL SUPERVISOR.") # Se despliega un error si no es válido   
+            enviar_correo('Insuficientes fondos en el cajero', 'No hay suficientes fondos en el cajero para devolver un cambio. Favor ir a cargar el cajero')
             anular_pago(cajero_ventana)
             return False
+
+        if  saldocoin1 < 5:
+            correotexto = 'Hay poca cantidad de monedas de ' + str(coin1)
+            enviar_correo(correotexto, correotexto)
+        if  saldocoin2 < 5:
+            correotexto = 'Hay poca cantidad de monedas de ' + str(coin2)
+            enviar_correo(correotexto, correotexto)
+        if  saldocoin3 < 5:
+            correotexto = 'Hay poca cantidad de monedas de ' + str(coin3)
+            enviar_correo(correotexto, correotexto)
+        if  saldobill1 < 5:
+            correotexto = 'Hay poca cantidad de billetes de ' + str(bill1)
+            enviar_correo(correotexto, correotexto)
+        if  saldobill2 < 5:
+            correotexto = 'Hay poca cantidad de billetes de ' + str(bill2)
+            enviar_correo(correotexto, correotexto)
+        if  saldobill3 < 5:
+            correotexto = 'Hay poca cantidad de billetes de ' + str(bill3)
+            enviar_correo(correotexto, correotexto)
+        if  saldobill4 < 5:
+            correotexto = 'Hay poca cantidad de billetes de ' + str(bill4)
+            enviar_correo(correotexto, correotexto)
+        if  saldobill5 < 5:
+            correotexto = 'Hay poca cantidad de billetes de ' + str(bill5)
+            enviar_correo(correotexto, correotexto)
     
-        coin1cambio_label['text'] = vueltocoin1
+    
+        coin1cambio_label['text'] = str(vueltocoin1) + " de " + str(coin1)
 
-        coin2cambio_label['text'] = vueltocoin2
+        coin2cambio_label['text'] = str(vueltocoin2) + " de " + str(coin2)
 
-        coin3cambio_label['text'] = vueltocoin3
+        coin3cambio_label['text'] = str(vueltocoin3) + " de " + str(coin3)
 
-        bill1cambio_label['text'] = vueltobill1
+        bill1cambio_label['text'] = str(vueltobill1) + " de " + str(bill1)
 
-        bill2cambio_label['text'] = vueltobill2
+        bill2cambio_label['text'] = str(vueltobill2) + " de " + str(bill2)
 
-        bill3cambio_label['text'] = vueltobill3
+        bill3cambio_label['text'] = str(vueltobill3) + " de " + str(bill3)
 
-        bill4cambio_label['text'] = vueltobill4
+        bill4cambio_label['text'] = str(vueltobill4) + " de " + str(bill4)
 
-        bill5cambio_label['text'] = vueltobill5
+        bill5cambio_label['text'] = str(vueltobill5) + " de " + str(bill5)
 
         if  (vueltocoin3 * coin3+ vueltocoin2 * coin2+ vueltocoin1 * coin1) >= 10:
             cambiomonto_label['text'] = str(vueltobill5 * bill5 + vueltobill4 * bill4 + vueltobill3 * bill3 + vueltobill2 * bill2 + vueltobill1 * bill1) +"." + str(vueltocoin3 * coin3+ vueltocoin2 * coin2+ vueltocoin1 * coin1)
@@ -1415,6 +1502,7 @@ def cajero():
         global configuracion
         global parqueo
         global pagado
+        global tiempocobrado
 
         global saldocoin1 # Los saldos contienen la cantidad de billetes
         global saldocoin2
@@ -1450,9 +1538,11 @@ def cajero():
                             sepuede = vuelto()
                             if sepuede == False:
                                 return
-                            montoapagar = -1
+                            
                             print(parqueo)
                             messagebox.showinfo("Éxito", "SE HA REGISTRADO SU PAGO") # Se despliega un error si no es válido
+                            imprimir_recibo(montoapagar, parqueo[i][1], dt_string, tiempocobrado, placa)
+                            montoapagar = -1
                         else:
                             messagebox.showinfo("Error", "ESTA PLACA YA PAGÓ") # Se despliega un error si no es válido
                             return
@@ -1574,7 +1664,7 @@ def cajero():
     seleccionarplaca_button.grid(row = 1, column = 2, padx = 4, pady = 4)  
 
     paso2_label = tk.Label(cajero_ventana, text = "Paso 2: SU PAGO EN:", font = ("Microsoft YaHei", 14),bg = blanco) 
-    paso2_label.grid(row = 2, column = 0)
+    paso2_label.grid(row = 5, column = 0)
 
     monedas_label = tk.Label(cajero_ventana, text = "MONEDAS", font = ("Microsoft YaHei", 14),bg = blanco) 
     monedas_label.grid(row = 5, column = 1)
@@ -1635,7 +1725,7 @@ def cajero():
     cambiomonto_label = tk.Label(cajero_ventana, text = "XXXXX", font = ("Microsoft YaHei", 14),bg = "#90de93") 
     cambiomonto_label.grid(row = 7, column = 4)
 
-    paso3_label = tk.Label(cajero_ventana, text = "Paso 2: SU CAMBIO EN", font = ("Microsoft YaHei", 14),bg = blanco) 
+    paso3_label = tk.Label(cajero_ventana, text = "Paso 3: SU CAMBIO EN", font = ("Microsoft YaHei", 14),bg = blanco) 
     paso3_label.grid(row = 11, column = 0)
 
     monedascambio_label = tk.Label(cajero_ventana, text = "MONEDAS", font = ("Microsoft YaHei", 14),bg = blanco) 
@@ -1761,10 +1851,10 @@ def salida():
 
 
 def ayuda():
-    pass
-
+    path = 'manual_de_usuario_parqueo.pdf'
+    os.system(path)
 ventana = tk.Tk()
-
+# C:\\Users\\dandi\\OneDrive-EstudiantesITCR\\Documentos\\TEC\\ISemestre\\Tallerdeprogramación\\Parqueo\\Parqueo\\
 ventana.geometry("1000x1000")
 ventana.title("Parqueo")
 ventana.configure(bg = blanco)
